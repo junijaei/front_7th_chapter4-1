@@ -4,7 +4,7 @@ import fs from "node:fs";
 
 const prod = process.env.NODE_ENV === "production";
 const port = process.env.PORT || 5173;
-const base = process.env.BASE || (prod ? "/front_7th_chapter4-1/vanilla/" : "/");
+const base = process.env.BASE || (prod ? "/front_7th_chapter4-1/vanilla/" : "");
 
 const app = express();
 // Cached production assets
@@ -35,7 +35,6 @@ app.use("*all", async (req, res) => {
     if (!prod) {
       template = fs.readFileSync("./index.html", "utf-8");
       template = await vite.transformIndexHtml(url, template);
-      console.log(template);
       render = (await vite.ssrLoadModule("/src/main-server.js")).render;
     } else {
       template = templateHtml;
