@@ -1,12 +1,9 @@
 import { cartStore, productStore, uiStore } from "./stores";
 import { router } from "./router";
-import { HomePage, NotFoundPage, ProductDetailPage } from "./pages";
 import { withBatch } from "./utils";
+import { ROUTES } from "./constants";
 
-// 홈 페이지 (상품 목록)
-router.addRoute("/", HomePage);
-router.addRoute("/product/:id/", ProductDetailPage);
-router.addRoute(".*", NotFoundPage);
+ROUTES.forEach(({ path, target }) => router.addRoute(path, target));
 
 /**
  * 전체 애플리케이션 렌더링
