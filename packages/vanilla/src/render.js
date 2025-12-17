@@ -1,9 +1,6 @@
 import { cartStore, productStore, uiStore } from "./stores";
 import { router } from "./router";
 import { withBatch } from "./utils";
-import { ROUTES } from "./constants";
-
-ROUTES.forEach(({ path, target }) => router.addRoute(path, target));
 
 /**
  * 전체 애플리케이션 렌더링
