@@ -1,14 +1,18 @@
 import express from "express";
 import { createServer } from "vite";
 import fs from "node:fs";
+import { server } from "./src/mocks/node.js";
 
 const prod = process.env.NODE_ENV === "production";
 const port = process.env.PORT || 5174;
 const base = process.env.BASE || (prod ? "/front_7th_chapter4-1/vanilla/" : "");
 
+const DIST_DIR = "./dist/vanilla";
+const SSR_DIST_DIR = "./dist/vanilla-ssr";
+
 const app = express();
 // Cached production assets
-const templateHtml = prod ? fs.readFileSync("./dist/vanilla/index.html", "utf-8") : "";
+const templateHtml = prod ? fs.readFileSync(`${DIST_DIR}/index.html`, "utf-8") : "";
 
 let vite;
 if (!prod) {
@@ -21,10 +25,11 @@ if (!prod) {
   const compression = (await import("compression")).default;
   const sirv = (await import("sirv")).default;
   app.use(compression());
-  app.use(base, sirv("./dist/vanilla", { extensions: [] }));
+  app.use(base, sirv(DIST_DIR, { extensions: [] }));
 }
 
 app.use("*all", async (req, res) => {
+  server.listen();
   try {
     const url = req.originalUrl;
     const origin = `${req.protocol}://${req.get("host")}`;
@@ -33,16 +38,19 @@ app.use("*all", async (req, res) => {
     let template;
     /** @type {import('./src/main-server.js').render} */
     let render;
+
     if (!prod) {
       template = fs.readFileSync("./index.html", "utf-8");
       template = await vite.transformIndexHtml(url, template);
-      render = (await vite.ssrLoadModule("/src/main-server.js")).render;
+      const mod = await vite.ssrLoadModule("/src/main-server.js");
+      render = mod.render;
     } else {
       template = templateHtml;
-      render = (await import("./dist/vanilla-ssr/main-server.js")).render;
+      const mod = await import(`${SSR_DIST_DIR}/main-server.js`);
+      render = mod.render;
     }
 
-    const rendered = await render(url, origin);
+    const rendered = await render(url, origin, base);
 
     if (rendered) {
       const html = template
@@ -55,6 +63,8 @@ app.use("*all", async (req, res) => {
     vite?.ssrFixStacktrace(e);
     console.log(e.stack);
     res.status(500).end(e.stack);
+  } finally {
+    server.close();
   }
 });
 

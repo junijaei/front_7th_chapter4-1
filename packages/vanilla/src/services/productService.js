@@ -3,7 +3,6 @@ import { initialProductState, productStore, PRODUCT_ACTIONS } from "../stores";
 import { router } from "../router";
 
 export const loadProductsAndCategories = async () => {
-  console.log("loadProductsAndCategories");
   router.query = { current: undefined }; // 항상 첫 페이지로 초기화
   productStore.dispatch({
     type: PRODUCT_ACTIONS.SETUP,
@@ -47,7 +46,6 @@ export const loadProductsAndCategories = async () => {
  * 상품 목록 로드 (새로고침)
  */
 export const loadProducts = async (resetList = true) => {
-  console.log("loadProducts");
   try {
     productStore.dispatch({
       type: PRODUCT_ACTIONS.SETUP,
@@ -121,7 +119,7 @@ export const setLimit = (limit) => {
  * 상품 상세 페이지용 상품 조회 및 관련 상품 로드
  */
 export const loadProductDetailForPage = async (productId) => {
-  console.log("loadProductDetailForPage");
+  ("loadProductDetailForPage");
   try {
     const currentProduct = productStore.getState().currentProduct;
     if (productId === currentProduct?.productId) {
@@ -168,7 +166,6 @@ export const loadProductDetailForPage = async (productId) => {
  * 관련 상품 로드 (같은 카테고리의 다른 상품들)
  */
 export const loadRelatedProducts = async (category2, excludeProductId) => {
-  console.log("loadRelatedProducts");
   try {
     const params = {
       category2,

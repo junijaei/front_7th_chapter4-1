@@ -21,7 +21,6 @@ const enableMocking = () =>
 const prefetchData = () => {
   if (window.__INITIAL_DATA__) {
     const data = window.__INITIAL_DATA__;
-    console.log({ data });
     if (data.products) {
       productStore.dispatch({
         type: PRODUCT_ACTIONS.SET_PRODUCTS,
@@ -32,14 +31,12 @@ const prefetchData = () => {
       });
     }
     if (data.currentProduct) {
-      console.log("data.currentProduct", data.currentProduct);
       productStore.dispatch({
         type: PRODUCT_ACTIONS.SET_CURRENT_PRODUCT,
         payload: data.currentProduct,
       });
     }
     if (data.relatedProducts) {
-      console.log("data.relatedProducts", data.relatedProducts);
       productStore.dispatch({
         type: PRODUCT_ACTIONS.SET_RELATED_PRODUCTS,
         payload: data.relatedProducts,

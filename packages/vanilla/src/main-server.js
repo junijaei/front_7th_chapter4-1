@@ -1,17 +1,10 @@
 import { getCategories, getProduct, getProducts } from "./api/productApi";
-import { server } from "./mocks/node";
 import { ServerRouter } from "./lib";
-import { BASE_URL } from "./constants";
 import { HomePage, NotFoundPage, ProductDetailPage } from "./pages";
 
-export const render = async (url, origin) => {
-  console.log({ url, origin });
-
-  // 1. MSW 서버 설정
-  server.listen();
-
+export const render = async (url, origin, baseUrl) => {
   try {
-    const router = new ServerRouter(BASE_URL, url);
+    const router = new ServerRouter(baseUrl, url);
     router.addRoute("/", HomePage);
     router.addRoute("/product/:id/", ProductDetailPage);
     router.addRoute(".*", NotFoundPage);
@@ -28,9 +21,6 @@ export const render = async (url, origin) => {
     };
   } catch (error) {
     console.error("Error during prefetch:", error);
-  } finally {
-    // 2. 정리
-    server.close();
   }
 };
 

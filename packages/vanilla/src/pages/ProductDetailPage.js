@@ -256,8 +256,6 @@ export const ProductDetailPage = withLifecycle(
       loading,
     } = serverProps ? serverProps : productStore.getState();
 
-    console.log(serverProps, productStore.getState(), product);
-
     return PageWrapper({
       headerLeft: `
         <div class="flex items-center space-x-3">
