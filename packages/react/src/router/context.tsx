@@ -22,10 +22,11 @@ export const useRouter = <T extends FunctionComponent>(): ClientRouter<T> | Serv
     throw new Error("useRouter must be used within a RouterProvider");
   }
 
+  // ✅ route와 query 모두 구독하여 변경 감지
   useSyncExternalStore(
     (callback) => router.subscribe(callback),
-    () => router.route,
-    () => router.route,
+    () => JSON.stringify({ route: router.route, query: router.query }),
+    () => JSON.stringify({ route: router.route, query: router.query }),
   );
 
   return router as ClientRouter<T> | ServerRouter<T>;

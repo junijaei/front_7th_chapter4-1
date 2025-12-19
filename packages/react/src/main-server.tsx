@@ -3,19 +3,9 @@ import { getCategories, getProduct, getProducts } from "./api/productApi";
 import { App } from "./App";
 import { HomePage, NotFoundPage, ProductDetailPage } from "./pages";
 import { RouterProvider, ServerRouter, type RouteMatch } from "./router";
-import type { Categories, Product } from "./entities";
 import type { StringRecord } from "./types";
 import { renderToString } from "react-dom/server";
-
-type PageData =
-  | Partial<{
-      products: Product[];
-      categories: Categories;
-      totalCount: number;
-      currentProduct: Product;
-      relatedProducts: Product[];
-    }>
-  | undefined;
+import { InitialDataProvider, type PageData } from "./contexts/InitialDataContext";
 
 export const render = async (url: string, origin: string, baseUrl: string) => {
   try {
@@ -29,22 +19,32 @@ export const render = async (url: string, origin: string, baseUrl: string) => {
     const metaData = getMetaData(router.route!.path, data);
     const initialData = data ? `<script>window.__INITIAL_DATA__ = ${JSON.stringify(data)}</script>` : "";
 
-    return {
-      head: `${metaData} ${initialData}`,
-      html: renderToString(
+    const html = renderToString(
+      <InitialDataProvider value={data}>
         <RouterProvider router={router}>
           <App />
-        </RouterProvider>,
-      ),
+        </RouterProvider>
+      </InitialDataProvider>,
+    );
+
+    return {
+      head: `${metaData}${initialData}`,
+      html,
     };
   } catch (error) {
-    console.error("Error during prefetch:", error);
+    console.error("Error during render:", error);
+    throw error;
   }
 };
 
 const getMetaData = (path: string, data: PageData) => {
-  if (path === "/") return "<title>쇼핑몰 - 홈</title>";
-  else if (path === "/product/:id/") return `<title>${data?.currentProduct?.title} - 쇼핑몰</title>`;
+  if (path === "/") {
+    return "<title>쇼핑몰 - 홈</title>";
+  } else if (path === "/product/:id/") {
+    const detailData = data as { currentProduct?: { title?: string } };
+    return `<title>${detailData?.currentProduct?.title ?? "상품"} - 쇼핑몰</title>`;
+  }
+  return "<title>쇼핑몰</title>";
 };
 
 const prefetchData = async (route: RouteMatch<FunctionComponent>, query: StringRecord, baseUrl: string) => {

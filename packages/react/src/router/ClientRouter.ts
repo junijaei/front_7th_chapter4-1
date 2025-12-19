@@ -55,7 +55,6 @@ export class ClientRouter<Handler extends (...args: never[]) => unknown> extends
   }
 
   private notify(): void {
-    console.log(this.listeners);
     this.listeners.forEach((fn) => fn());
   }
 
@@ -64,14 +63,11 @@ export class ClientRouter<Handler extends (...args: never[]) => unknown> extends
    * @param url - 이동할 경로
    */
   push(url: string): void {
-    console.log("push");
     try {
       // baseUrl이 없으면 자동으로 붙여줌
       const fullUrl = url.startsWith(this.baseUrl) ? url : this.baseUrl + (url.startsWith("/") ? url : "/" + url);
 
       const prevFullUrl = `${window.location.pathname}${window.location.search}`;
-
-      console.log({ fullUrl, prevFullUrl });
 
       // 히스토리 업데이트
       if (prevFullUrl !== fullUrl) {

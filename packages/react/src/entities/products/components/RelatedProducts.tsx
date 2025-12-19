@@ -1,9 +1,9 @@
 import { useRouter, ClientRouter } from "../../../router";
-import { useProductStore } from "../hooks";
+import { useProductStoreWithSSR } from "../hooks";
 
 export default function RelatedProducts() {
   const router = useRouter();
-  const { relatedProducts } = useProductStore();
+  const { relatedProducts } = useProductStoreWithSSR();
   if (relatedProducts.length === 0) {
     return null;
   }

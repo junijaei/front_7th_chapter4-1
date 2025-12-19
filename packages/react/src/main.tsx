@@ -4,6 +4,8 @@ import { initRoutes } from "./routes";
 import { BASE_URL } from "./constants.ts";
 import { createRoot, hydrateRoot } from "react-dom/client";
 import type { FunctionComponent } from "react";
+import { InitialDataProvider, type PageData } from "./contexts/InitialDataContext.tsx";
+import { PRODUCT_ACTIONS, productStore } from "./entities/index.ts";
 
 const enableMocking = () =>
   import("./mocks/browser").then(({ worker }) =>
@@ -15,17 +17,54 @@ const enableMocking = () =>
     }),
   );
 
+const prefetchData = () => {
+  const data = window?.__INITIAL_DATA__ as PageData;
+  if (data) {
+    if ("products" in data) {
+      productStore.dispatch({
+        type: PRODUCT_ACTIONS.SET_PRODUCTS,
+        payload: {
+          products: data.products,
+          totalCount: data.totalCount,
+        },
+      });
+    }
+    if ("categories" in data) {
+      productStore.dispatch({
+        type: PRODUCT_ACTIONS.SET_CATEGORIES,
+        payload: data.categories,
+      });
+    }
+    if ("currentProduct" in data) {
+      productStore.dispatch({
+        type: PRODUCT_ACTIONS.SET_CURRENT_PRODUCT,
+        payload: data.currentProduct,
+      });
+    }
+    if ("relatedProducts" in data) {
+      productStore.dispatch({
+        type: PRODUCT_ACTIONS.SET_RELATED_PRODUCTS,
+        payload: data.relatedProducts,
+      });
+    }
+    delete window.__INITIAL_DATA__;
+  }
+};
+
 function main() {
   const router = new ClientRouter<FunctionComponent>(BASE_URL);
   initRoutes(router);
   router.start();
+  prefetchData();
 
   const rootElement = document.getElementById("root")!;
   if (rootElement.innerHTML === "<!--app-html-->") {
     createRoot(rootElement).render(
-      <RouterProvider router={router}>
-        <App />
-      </RouterProvider>,
+      <InitialDataProvider value={window.__INITIAL_DATA__}>
+        <RouterProvider router={router}>
+          <App />
+        </RouterProvider>
+      </InitialDataProvider>,
     );
   } else {
     hydrateRoot(

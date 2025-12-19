@@ -1,7 +1,7 @@
 import { ProductCard, ProductCardSkeleton } from "./ProductCard";
 import { useRouter, ClientRouter } from "../../../router";
 import { PublicImage } from "../../../components";
-import { useProductStore } from "../hooks";
+import { useProductStoreWithSSR } from "../hooks";
 import { loadProducts } from "../productUseCase";
 
 /**
@@ -9,7 +9,7 @@ import { loadProducts } from "../productUseCase";
  */
 export function ProductList() {
   const router = useRouter();
-  const { products, loading, error, totalCount } = useProductStore();
+  const { products, loading, error, totalCount } = useProductStoreWithSSR();
   const hasMore = products.length < totalCount;
 
   const retry = async () => {

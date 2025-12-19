@@ -11,11 +11,13 @@ const createErrorMessage = (error: unknown, defaultMessage = "알 수 없는 오
   error instanceof Error ? error.message : defaultMessage;
 
 const updateQuery = (router: ApplicationRouter, newQuery: Record<string, string | undefined>) => {
-  const queryString = ClientRouter.stringifyQuery(newQuery);
+  // 기존 쿼리와 새 쿼리를 병합
+  const mergedQuery = { ...router.query, ...newQuery };
+  const queryString = ClientRouter.stringifyQuery(mergedQuery);
 
   if (router instanceof ClientRouter) {
     const path = window.location.pathname;
-    router.push(`${path}?${queryString}`);
+    router.push(`${path}${queryString ? "?" + queryString : ""}`);
   }
 };
 

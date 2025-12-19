@@ -1,6 +1,6 @@
 import { type ChangeEvent, Fragment, type KeyboardEvent, type MouseEvent } from "react";
 import { PublicImage } from "../../../components";
-import { useProductStore } from "../hooks";
+import { useProductStoreWithSSR } from "../hooks";
 import { useProductFilter } from "./hooks";
 import { searchProducts, setCategory, setLimit, setSort } from "../productUseCase";
 import { useRouter } from "../../../router";
@@ -15,7 +15,7 @@ const OPTION_SORTS = [
 
 export function SearchBar() {
   const router = useRouter();
-  const { categories } = useProductStore();
+  const { categories } = useProductStoreWithSSR();
   const { searchQuery, limit = "20", sort, category } = useProductFilter();
 
   // 검색 입력 (Enter 키)

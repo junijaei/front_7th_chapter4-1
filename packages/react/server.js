@@ -46,7 +46,7 @@ app.use("*all", async (req, res) => {
       render = mod.render;
     } else {
       template = templateHtml;
-      const mod = await import(`${SSR_DIST_DIR}/main-server.tsx`);
+      const mod = await import(`${SSR_DIST_DIR}/main-server.js`);
       render = mod.render;
     }
 

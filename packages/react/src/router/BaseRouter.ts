@@ -138,11 +138,4 @@ export abstract class BaseRouter<Handler extends (...args: never[]) => unknown> 
     }
     return params.toString();
   }
-
-  /**
-   * 라우터 상태 변경 구독 (자식 클래스에서 override)
-   */
-  subscribe(): () => void {
-    return () => {};
-  }
 }

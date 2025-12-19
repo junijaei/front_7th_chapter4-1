@@ -1,5 +1,11 @@
 import { useEffect } from "react";
-import { loadNextProducts, loadProductsAndCategories, ProductList, SearchBar } from "../entities";
+import {
+  loadNextProducts,
+  loadProductsAndCategories,
+  ProductList,
+  SearchBar,
+  useProductStoreWithSSR,
+} from "../entities";
 import { PageWrapper } from "./PageWrapper";
 import { useRouter } from "../router";
 
@@ -13,13 +19,15 @@ const headerLeft = (
 
 export const HomePage = () => {
   const router = useRouter();
+  const { products, categories, status } = useProductStoreWithSSR();
 
   useEffect(() => {
     const handleScroll = () => loadNextProducts(router);
     window.addEventListener("scroll", handleScroll);
-
+    if (products.length > 0 && Object.keys(categories).length > 0 && status === "done") {
+      return;
+    }
     loadProductsAndCategories(router);
-
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
