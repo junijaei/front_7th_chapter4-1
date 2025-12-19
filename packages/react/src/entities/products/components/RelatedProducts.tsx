@@ -1,7 +1,8 @@
-import { router } from "../../../router";
+import { useRouter, ClientRouter } from "../../../router";
 import { useProductStore } from "../hooks";
 
 export default function RelatedProducts() {
+  const router = useRouter();
   const { relatedProducts } = useProductStore();
   if (relatedProducts.length === 0) {
     return null;
@@ -19,7 +20,11 @@ export default function RelatedProducts() {
               key={relatedProduct.productId}
               className="bg-gray-50 rounded-lg p-3 related-product-card cursor-pointer"
               data-product-id={relatedProduct.productId}
-              onClick={() => router.push(`/product/${relatedProduct.productId}/`)}
+              onClick={() => {
+                if (router instanceof ClientRouter) {
+                  router.push(`/product/${relatedProduct.productId}/`);
+                }
+              }}
             >
               <div className="aspect-square bg-white rounded-md overflow-hidden mb-2">
                 <img

@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { loadNextProducts, loadProductsAndCategories, ProductList, SearchBar } from "../entities";
 import { PageWrapper } from "./PageWrapper";
+import { useRouter } from "../router";
 
 const headerLeft = (
   <h1 className="text-xl font-bold text-gray-900">
@@ -10,29 +11,19 @@ const headerLeft = (
   </h1>
 );
 
-// 무한 스크롤 이벤트 등록
-let scrollHandlerRegistered = false;
-
-const registerScrollHandler = () => {
-  if (scrollHandlerRegistered) return;
-
-  window.addEventListener("scroll", loadNextProducts);
-  scrollHandlerRegistered = true;
-};
-
-const unregisterScrollHandler = () => {
-  if (!scrollHandlerRegistered) return;
-  window.removeEventListener("scroll", loadNextProducts);
-  scrollHandlerRegistered = false;
-};
-
 export const HomePage = () => {
-  useEffect(() => {
-    registerScrollHandler();
-    loadProductsAndCategories();
+  const router = useRouter();
 
-    return unregisterScrollHandler;
-  }, []);
+  useEffect(() => {
+    const handleScroll = () => loadNextProducts(router);
+    window.addEventListener("scroll", handleScroll);
+
+    loadProductsAndCategories(router);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [router]);
 
   return (
     <PageWrapper headerLeft={headerLeft}>
