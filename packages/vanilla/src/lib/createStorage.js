@@ -9,7 +9,7 @@ const defaultStorage =
   typeof window === "undefined"
     ? {
         getItem: () => null,
-        settItem: () => null,
+        setItem: () => null,
         removeItem: () => null,
       }
     : window.localStorage;

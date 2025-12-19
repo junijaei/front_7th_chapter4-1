@@ -1,12 +1,12 @@
 import type { StringRecord } from "../types";
 
-interface Route<Handler> {
+export interface Route<Handler> {
   regex: RegExp;
   paramNames: string[];
   handler: Handler;
 }
 
-interface RouteMatch<Handler> extends Route<Handler> {
+export interface RouteMatch<Handler> extends Route<Handler> {
   params: StringRecord;
   path: string;
 }

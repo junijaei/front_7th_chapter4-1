@@ -2,7 +2,7 @@ import { App } from "./App";
 import { ClientRouter, RouterProvider } from "./router";
 import { initRoutes } from "./routes";
 import { BASE_URL } from "./constants.ts";
-import { createRoot } from "react-dom/client";
+import { createRoot, hydrateRoot } from "react-dom/client";
 import type { FunctionComponent } from "react";
 
 const enableMocking = () =>
@@ -21,11 +21,20 @@ function main() {
   router.start();
 
   const rootElement = document.getElementById("root")!;
-  createRoot(rootElement).render(
-    <RouterProvider router={router}>
-      <App />
-    </RouterProvider>,
-  );
+  if (rootElement.innerHTML === "<!--app-html-->") {
+    createRoot(rootElement).render(
+      <RouterProvider router={router}>
+        <App />
+      </RouterProvider>,
+    );
+  } else {
+    hydrateRoot(
+      rootElement,
+      <RouterProvider router={router}>
+        <App />
+      </RouterProvider>,
+    );
+  }
 }
 
 // 애플리케이션 시작
