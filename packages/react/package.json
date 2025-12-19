@@ -30,7 +30,8 @@
   "dependencies": {
     "react": "latest",
     "react-dom": "latest",
-    "@hanghae-plus/lib": "workspace:*"
+    "@hanghae-plus/lib": "workspace:*",
+    "nodemon": "^3.1.11"
   },
   "devDependencies": {
     "@babel/core": "latest",

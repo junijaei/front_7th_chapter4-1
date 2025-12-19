@@ -159,6 +159,9 @@ importers:
       '@hanghae-plus/lib':
         specifier: workspace:*
         version: link:../lib
+      nodemon:
+        specifier: ^3.1.11
+        version: 3.1.11
       react:
         specifier: latest
         version: 19.1.1
