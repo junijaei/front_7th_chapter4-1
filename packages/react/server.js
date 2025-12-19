@@ -61,8 +61,13 @@ app.use("*all", async (req, res) => {
     }
   } catch (e) {
     vite?.ssrFixStacktrace(e);
-    console.log(e.stack);
-    res.status(500).end(e.stack);
+    console.error(e.stack);
+    // 프로덕션에서는 스택 트레이스 노출 방지
+    if (prod) {
+      res.status(500).end("Internal Server Error");
+    } else {
+      res.status(500).end(e.stack);
+    }
   } finally {
     server.close();
   }

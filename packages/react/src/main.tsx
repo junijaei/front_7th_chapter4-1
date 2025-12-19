@@ -17,7 +17,7 @@ const enableMocking = () =>
     }),
   );
 
-const prefetchData = () => {
+const hydrateData = () => {
   const data = window?.__INITIAL_DATA__ as PageData;
   if (data) {
     if ("products" in data) {
@@ -55,7 +55,7 @@ function main() {
   const router = new ClientRouter<FunctionComponent>(BASE_URL);
   initRoutes(router);
   router.start();
-  prefetchData();
+  hydrateData();
 
   const rootElement = document.getElementById("root")!;
   if (rootElement.innerHTML === "<!--app-html-->") {

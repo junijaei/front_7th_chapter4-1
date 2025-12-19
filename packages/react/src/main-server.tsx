@@ -1,18 +1,16 @@
 import type { FunctionComponent } from "react";
 import { getCategories, getProduct, getProducts } from "./api/productApi";
 import { App } from "./App";
-import { HomePage, NotFoundPage, ProductDetailPage } from "./pages";
 import { RouterProvider, ServerRouter, type RouteMatch } from "./router";
 import type { StringRecord } from "./types";
 import { renderToString } from "react-dom/server";
 import { InitialDataProvider, type PageData } from "./contexts/InitialDataContext";
+import { initRoutes } from "./routes";
 
 export const render = async (url: string, origin: string, baseUrl: string) => {
   try {
     const router = new ServerRouter<FunctionComponent>(baseUrl, url);
-    router.addRoute("/", HomePage);
-    router.addRoute("/product/:id/", ProductDetailPage);
-    router.addRoute(".*", NotFoundPage);
+    initRoutes(router);
     router.start();
 
     const data = await prefetchData(router.route!, router.query, origin);

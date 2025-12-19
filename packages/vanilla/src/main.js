@@ -18,7 +18,7 @@ const enableMocking = () =>
     }),
   );
 
-const prefetchData = () => {
+const hydrateData = () => {
   if (window.__INITIAL_DATA__) {
     const data = window.__INITIAL_DATA__;
     if (data.products) {
@@ -53,7 +53,7 @@ const prefetchData = () => {
 };
 
 function main() {
-  prefetchData();
+  hydrateData();
   registerAllEvents();
   registerGlobalEvents();
   loadCartFromStorage();

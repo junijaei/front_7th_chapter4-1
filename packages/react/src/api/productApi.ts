@@ -2,6 +2,19 @@
 import type { Categories, Product } from "../entities";
 import type { StringRecord } from "../types.ts";
 
+/**
+ * API 응답 검증 및 에러 처리
+ * @param response - fetch 응답 객체
+ * @param endpoint - API 엔드포인트 (에러 메시지용)
+ */
+async function handleResponse<T>(response: Response, endpoint: string): Promise<T> {
+  if (!response.ok) {
+    const errorText = await response.text().catch(() => "Unknown error");
+    throw new Error(`API Error [${response.status}] ${endpoint}: ${errorText}`);
+  }
+  return response.json();
+}
+
 interface ProductsResponse {
   products: Product[];
   pagination: {
@@ -33,19 +46,22 @@ export async function getProducts(params: StringRecord = {}, baseUrl = ""): Prom
     sort,
   });
 
-  const response = await fetch(`${baseUrl}/api/products?${searchParams}`);
+  const endpoint = `/api/products?${searchParams}`;
+  const response = await fetch(`${baseUrl}${endpoint}`);
 
-  return await response.json();
+  return handleResponse<ProductsResponse>(response, endpoint);
 }
 
 // 상품 상세 조회
 export async function getProduct(productId: string, baseUrl = ""): Promise<Product> {
-  const response = await fetch(`${baseUrl}/api/products/${productId}`);
-  return await response.json();
+  const endpoint = `/api/products/${productId}`;
+  const response = await fetch(`${baseUrl}${endpoint}`);
+  return handleResponse<Product>(response, endpoint);
 }
 
 // 카테고리 목록 조회
 export async function getCategories(baseUrl = ""): Promise<Categories> {
-  const response = await fetch(`${baseUrl}/api/categories`);
-  return await response.json();
+  const endpoint = `/api/categories`;
+  const response = await fetch(`${baseUrl}${endpoint}`);
+  return handleResponse<Categories>(response, endpoint);
 }

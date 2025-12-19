@@ -20,7 +20,8 @@ export const render = async (url, origin, baseUrl) => {
       html: () => pageComponent({ ...data, loading: false, error: null, serverRouter: router }),
     };
   } catch (error) {
-    console.error("Error during prefetch:", error);
+    console.error("Error during SSR render:", error);
+    throw error;
   }
 };
 
